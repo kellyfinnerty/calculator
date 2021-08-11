@@ -1,10 +1,44 @@
 <!DOCTYPE html>
 <html>
-    <head>
-
+    <head class="head">
+        <link rel="stylesheet" href="style.css">
     </head>
-    <body>
+    <body class="body">
+        <header>
+            <h1>Calculator</h1>
+        </header>
 
+        <main class="main">
+            <div id="calc-container">
+                <div class="user-output">0</div>
+                <button id="clear" class="last-col">AC</button>
+
+                <button class="num-key ">7</button>
+                <button class="num-key ">8</button>
+                <button class="num-key ">9</button>
+                <button class="last-col operator">÷</button>
+
+                <button class="num-key ">4</button>
+                <button class="num-key ">5</button>
+                <button class="num-key ">6</button>
+                <button class="last-col operator">×</button>
+
+                <button class="num-key ">1</button>
+                <button class="num-key ">2</button>
+                <button class="num-key ">3</button>
+                <button class="last-col operator">−</button>
+
+                <button class="num-key">0</button>
+                <button id="decimal" class="">.</button>
+                <button id="equal" class="">=</button>
+                <button class="last-col operator">+</button>
+                <p class="small-display"></p>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Copyright © 2021 kellyfinnerty</p>
+        </footer>
     </body>
     <script src="script.js"></script>
 </html>

@@ -1,0 +1,54 @@
+.body{
+    display: grid;
+    grid-template-rows: 1fr 8fr 1fr;
+    font-family: arial;
+    background-color: grey;
+}
+
+h1{
+    text-align: center;
+}
+
+.main{
+    align-content: center;
+}
+
+#calc-container{
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    
+    width: 50%;
+    
+}
+
+.user-output{
+    grid-column-start: 1;
+    grid-column-end: 4;
+    text-align: right;
+    padding: 10px;
+    background-color: rgb(201, 192, 192);
+}
+
+.num-key{
+    background-color: rgba(236, 187, 195, 0.781);
+}
+
+.last-col{
+    background-color: bisque;
+    grid-column-start: 4;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+}
