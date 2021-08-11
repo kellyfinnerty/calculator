@@ -1,23 +1,42 @@
 const ROUND_RESULT = 4
+const DISPLAY = document.querySelector('.user-output');
+
+var prevNum = null;
+var operator = null;
+var secondNum = null;
+var currNum = 0;
+
+var replacementOperatorFlag = false;
+var userInputedNumFlag = false;
+
+addNumberEventListeners();
+addOperatorEventListeners();
+addClearEventListener();
+addEqualEventListener();
+addDecimalEventListener()
 
 function add(a, b){
-    return Number((a + b).toFixed(ROUND_RESULT));
+    var sum = Number(a) + Number(b);
+    return Number((sum).toFixed(ROUND_RESULT));
 }
 
 function subtract(a, b){
-    return Number((a-b).toFixed(ROUND_RESULT));
+    var diff = Number(a) - Number(b);
+    return Number((diff).toFixed(ROUND_RESULT));
 }
 
 function divide(a, b){
     if (b === 0) {
         throw 'Can\'t divide by 0!';
     } else {
-        return Number((a/b).toFixed(ROUND_RESULT));
+        var quot = Number(a) / Number(b);
+        return Number((quot).toFixed(ROUND_RESULT));
     }
 }
 
 function multiply(a, b){
-    return Number((a*b).toFixed(ROUND_RESULT));
+    var prod = Number(a) * Number(b);
+    return Number((prod).toFixed(ROUND_RESULT));
 }
 
 
@@ -34,8 +53,10 @@ function operate(operator, num1, num2){
 function addDecimalEventListener(){
     const deci = document.querySelector('#decimal');
     deci.addEventListener("click", function(e){
-        if(currNum % 1 === 0) return
-        
+        // check if already a decimal point
+        if(Number(currNum) % 1 !== 0) return
+        currNum += '.';
+        DISPLAY.textContent = currNum;
     });
 }
 
@@ -43,12 +64,12 @@ function addEqualEventListener(){
     const equal = document.querySelector('#equal');
     equal.addEventListener("click", function(e){
         if(prevNum == null || operator == null) return
-        if(Number(DISPLAY.textContent) != currNum) return
+        if(DISPLAY.textContent !== currNum) return
 
         var result = operate(operator, prevNum, currNum);
         updateSmallDisplay(`${prevNum} ${operator} ${currNum} =`);
         resetVariables();
-        currNum = result;
+        currNum = result.toString();
         updateDisplay(currNum);
     });
 }
@@ -70,8 +91,8 @@ function addOperatorEventListeners(){
 function clickedOperator(e){
     //if not a replacement operator - update prevNum, checking accordingly if there's already an operation in process
     if(!replacementOperatorFlag){
-        if(prevNum || prevNum === 0){
-            try{ prevNum = operate(operator, prevNum, currNum); }
+        if(prevNum || prevNum === '0'){
+            try{ prevNum = operate(operator, prevNum, currNum).toString(); }
             catch(e){
                 alert(e);
                 return;
@@ -85,7 +106,7 @@ function clickedOperator(e){
 
     replacementOperatorFlag = true;
 
-    currNum = 0;
+    currNum = '0';
     operator = e.target.textContent;
 
     updateSmallDisplay(`${prevNum} ${operator}`);     
@@ -100,7 +121,16 @@ function clickedNumber(e){
     replacementOperatorFlag = false;
     userInputedNumFlag = true;
 
-    currNum = currNum * 10 + Number(e.target.textContent);
+    var inputNum = e.target.textContent;
+    //currNum = (currNum === '0') ? inputNum : currNum + inputNum;
+
+    if (currNum == '0'){
+        currNum = inputNum;
+    }
+    else {
+        currNum += inputNum;
+    }
+
     updateDisplay(currNum);
 }
 
@@ -116,26 +146,16 @@ function updateSmallDisplay(val){
 function resetVariables(){
     prevNum = null;
     operator = null;
-    currNum = 0;
+    currNum = '0';
     replacementOperatorFlag = false;
     userInputedNumFlag = false;
 }
 
-const DISPLAY = document.querySelector('.user-output');
 
-var prevNum = null;
-var operator = null;
-var secondNum = null;
-var currNum = 0;
 
-var replacementOperatorFlag = false;
-var userInputedNumFlag = false;
 
-addNumberEventListeners();
-addOperatorEventListeners();
-addClearEventListener();
-addEqualEventListener();
-addDecimalEventListener()
+
+
 
 // NOT CURRENTLY USED
 function createNumKeys(){
