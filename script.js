@@ -1,5 +1,5 @@
 const ROUND_RESULT = 4
-const DISPLAY = document.querySelector('.user-output');
+const DISPLAY = document.querySelector('.large-output');
 
 var prevNum = null;
 var operator = null;
@@ -15,6 +15,7 @@ addClearEventListener();
 addEqualEventListener();
 addDecimalEventListener()
 addDeleteEventListener();
+addKeyboardEventListener();
 
 function add(a, b){
     var sum = Number(a) + Number(b);
@@ -54,42 +55,48 @@ function operate(operator, num1, num2){
 
 function addDeleteEventListener(){
     const del = document.querySelector('#delete');
-    del.addEventListener("click", function(e){
-        if (Number(currNum) !== 0){
-            currNum = (currNum.length <= 1) ? '0' : currNum.slice(0, currNum.length - 1);
-            updateDisplay(currNum);
-        }
-    })
+    del.addEventListener("click", clickedDelete);
+}
+
+function clickedDelete(){
+    if (Number(currNum) !== 0){
+        currNum = (currNum.length <= 1) ? '0' : currNum.slice(0, currNum.length - 1);
+        updateDisplay(currNum);
+    }
 }
 
 
 function addDecimalEventListener(){
     const deci = document.querySelector('#decimal');
-    deci.addEventListener("click", function(e){
-        // check if already a decimal point
-        if(Number(currNum) % 1 !== 0) return
-        currNum += '.';
-        DISPLAY.textContent = currNum;
-    });
+    deci.addEventListener("click", clickedDecimal);
+}
+
+function clickedDecimal(){
+    // check if already a decimal point
+    if(Number(currNum) % 1 !== 0) return
+    currNum += '.';
+    DISPLAY.textContent = currNum;
 }
 
 function addEqualEventListener(){
     const equal = document.querySelector('#equal');
-    equal.addEventListener("click", function(e){
-        if(prevNum == null || operator == null) return
-        if(DISPLAY.textContent !== currNum) return
+    equal.addEventListener("click", clickedEqual);
+}
 
-        try{ var result = operate(operator, prevNum, currNum).toString(); }
-        catch(e){
-            alert(e);
-            return;
-        }
+function clickedEqual(){
+    if(prevNum == null || operator == null) return
+    if(DISPLAY.textContent !== currNum) return
 
-        updateSmallDisplay(`${prevNum} ${operator} ${currNum} =`);
-        resetVariables();
-        currNum = result;
-        updateDisplay(currNum);
-    });
+    try{ var result = operate(operator, prevNum, currNum).toString(); }
+    catch(error){
+        alert(error);
+        return;
+    }
+
+    updateSmallDisplay(`${prevNum} ${operator} ${currNum} =`);
+    resetVariables();
+    currNum = result;
+    updateDisplay(currNum);
 }
 
 function addClearEventListener(){
@@ -103,16 +110,18 @@ function addClearEventListener(){
 
 function addOperatorEventListeners(){
     const operators = Array.from(document.querySelectorAll('.operator'));
-    operators.forEach(operator => operator.addEventListener("click", clickedOperator));
+    operators.forEach(operator => operator.addEventListener("click", function(e){
+        clickedOperator(e.target.textContent);
+    }));
 }
 
-function clickedOperator(e){
+function clickedOperator(newOperator){
     //if not a replacement operator - update prevNum, checking accordingly if there's already an operation in process
     if(!replacementOperatorFlag){
         if(prevNum || prevNum === '0'){
             try{ prevNum = operate(operator, prevNum, currNum).toString(); }
-            catch(e){
-                alert(e);
+            catch(err){
+                alert(err);
                 return;
             }
             
@@ -123,23 +132,23 @@ function clickedOperator(e){
     }
 
     replacementOperatorFlag = true;
-
     currNum = '0';
-    operator = e.target.textContent;
+    operator = newOperator;
 
     updateSmallDisplay(`${prevNum} ${operator}`);     
 }
 
 function addNumberEventListeners(){
     const numbers = Array.from(document.querySelectorAll('.num-key'));
-    numbers.forEach(number => number.addEventListener("click", clickedNumber));
+    numbers.forEach(number => number.addEventListener("click", function(e){
+        clickedNumber(e.target.textContent);
+    }));
 }
 
-function clickedNumber(e){
+function clickedNumber(inputNum){
     replacementOperatorFlag = false;
     userInputedNumFlag = true;
 
-    var inputNum = e.target.textContent;
     //currNum = (currNum === '0') ? inputNum : currNum + inputNum;
 
     if (currNum == '0'){
@@ -157,7 +166,7 @@ function updateDisplay(val){
 }
 
 function updateSmallDisplay(val){
-    const smallDisplay = document.querySelector('.small-display');
+    const smallDisplay = document.querySelector('.small-output');
     smallDisplay.textContent = val;
 }
 
@@ -170,7 +179,38 @@ function resetVariables(){
 }
 
 
+function addKeyboardEventListener(){
+    document.addEventListener("keydown", function(e){
+        const keyName = e.key;
+        const operators = ['+', '-', '−', '×', 'x', '*', '/',  '÷',];
 
+        if (Number(keyName) || keyName === '0'){
+            clickedNumber(keyName);
+        } else if (operators.includes(keyName)){
+            clickedOperator(cleanOperator(keyName));
+        } else if (keyName === '=' || keyName === 'Enter'){
+            clickedEqual();
+        } else if (keyName === '.'){
+            clickedDecimal();
+        } else if (keyName === 'Backspace'){
+            clickedDelete();
+        }
+    })
+}
+
+function cleanOperator(op){
+    if (op === '-'){
+        return '−';
+    } 
+    if (op === 'x' || op === '*'){
+        return '×';
+    }
+    if (op === '/') {
+        return '÷';
+    }
+
+    return op;
+}
 
 
 
