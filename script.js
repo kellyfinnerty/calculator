@@ -14,6 +14,7 @@ addOperatorEventListeners();
 addClearEventListener();
 addEqualEventListener();
 addDecimalEventListener()
+addDeleteEventListener();
 
 function add(a, b){
     var sum = Number(a) + Number(b);
@@ -49,6 +50,18 @@ function operate(operator, num1, num2){
         catch (e) { throw e; }
     }
 }
+
+
+function addDeleteEventListener(){
+    const del = document.querySelector('#delete');
+    del.addEventListener("click", function(e){
+        if (Number(currNum) !== 0){
+            currNum = (currNum.length <= 1) ? '0' : currNum.slice(0, currNum.length - 1);
+            updateDisplay(currNum);
+        }
+    })
+}
+
 
 function addDecimalEventListener(){
     const deci = document.querySelector('#decimal');
