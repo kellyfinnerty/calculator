@@ -27,7 +27,7 @@ function subtract(a, b){
 }
 
 function divide(a, b){
-    if (b === 0) {
+    if (Number(b) === 0) {
         throw 'Can\'t divide by 0!';
     } else {
         var quot = Number(a) / Number(b);
@@ -79,10 +79,15 @@ function addEqualEventListener(){
         if(prevNum == null || operator == null) return
         if(DISPLAY.textContent !== currNum) return
 
-        var result = operate(operator, prevNum, currNum);
+        try{ var result = operate(operator, prevNum, currNum).toString(); }
+        catch(e){
+            alert(e);
+            return;
+        }
+
         updateSmallDisplay(`${prevNum} ${operator} ${currNum} =`);
         resetVariables();
-        currNum = result.toString();
+        currNum = result;
         updateDisplay(currNum);
     });
 }
